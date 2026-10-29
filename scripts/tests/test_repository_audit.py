@@ -80,6 +80,25 @@ class RepositoryAuditTests(unittest.TestCase):
             self.assertFalse(report["findings"])
             self.assertFalse(report["publication_approved"])
 
+    def test_export_preserves_project_and_third_party_licenses(self):
+        with tempfile.TemporaryDirectory() as folder:
+            parent = Path(folder)
+            root = parent / "source"
+            (root / "LICENSES").mkdir(parents=True)
+            expected = {
+                "LICENSE": "Project license fixture\n",
+                "THIRD_PARTY_NOTICES.md": "Upstream attribution fixture\n",
+                "LICENSES/DCloud-MIT.txt": "Third-party license fixture\n",
+            }
+            for relative, content in expected.items():
+                (root / relative).write_text(content, encoding="utf-8")
+            output = parent / "candidate"
+            report = prepare(root, output)
+            for relative, content in expected.items():
+                self.assertEqual((output / relative).read_text(encoding="utf-8"), content)
+            self.assertEqual(report["exported_files"], 3)
+            self.assertFalse(report["findings"])
+
     def test_export_refuses_existing_or_overlapping_output(self):
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)

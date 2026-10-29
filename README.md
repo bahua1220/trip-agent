@@ -128,5 +128,5 @@ scripts/                  仓库整理工具及测试
 
 项目起步参考了 [Hello-Agents](https://github.com/datawhalechina/Hello-Agents) 和 [HelloAgents](https://github.com/jjyaoao/HelloAgents) 的旅行规划示例，并持续完善候选选择、交通衔接、排程、编辑和任务管理。感谢相关框架、uni-app 及地图与天气服务的作者和维护者。
 
-项目级许可证正在整理，第三方依赖遵循各自的许可证。
+本项目沿用原示例的 [CC BY-NC-SA 4.0](LICENSE) 许可（署名—非商业性使用—相同方式共享）。来源、修改和第三方组件许可见 [第三方说明](THIRD_PARTY_NOTICES.md)。
 

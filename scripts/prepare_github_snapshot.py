@@ -13,10 +13,10 @@ from repository_audit import SKIP_DIRS, audit, private_file
 TREE_ALLOWLIST = (
     "backend/app", "backend/scripts", "backend/tests", "frontend/src", "frontend/public",
     "frontend_miniapp_patch/api", "frontend_miniapp_patch/pages", "frontend_miniapp_patch/tests",
-    "scripts", "docs",
+    "scripts", "docs", "LICENSES",
 )
 FILE_ALLOWLIST = (
-    "README.md", "SECURITY.md", ".gitignore", "LICENSE", "NOTICE",
+    "README.md", "SECURITY.md", ".gitignore", "LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md",
     "backend/.gitignore", "backend/.env.example", "backend/requirements.txt", "backend/run.py",
     "frontend/.gitignore", "frontend/.env.example", "frontend/package.json", "frontend/package-lock.json",
     "frontend/index.html", "frontend/tsconfig.json", "frontend/vite.config.ts",

@@ -1,47 +1,36 @@
 # Trip Agent · 智能旅行规划
 
-填写目的地、出行日期和旅行偏好，生成一份包含景点、餐饮、住宿及交通安排的多日行程。
+支持单城市和多城市旅行的 AI 行程规划工具，提供 Web 与微信小程序。填写目的地、出行日期和偏好后，生成包含景点、餐饮、住宿及逐段交通的每日安排，并支持继续编辑和保存。
 
-Trip Agent 支持单城市和多城市旅行，提供 Web 和微信小程序两个客户端。你可以查看每天的时间轴，也可以继续调整景点、餐厅和交通方式。
+使用 **Python + FastAPI + LangChain / LangGraph + MySQL** 构建后端，Web 使用 **Vue 3 + TypeScript**，小程序使用 **uni-app**。模型参与路线和候选选择，地图服务与排程规则共同完成时间安排。
 
-## 能做什么
+## 核心功能
 
-- **单城市规划**：根据游玩节奏、兴趣和交通偏好安排每天的活动。
-- **多城市规划**：推荐城市游览顺序，把换城时间和两端接驳计入日程。
-- **抵达与离开安排**：选择车站或机场，填写抵离时间，预留入住、退房和候车时间。
-- **每日时间轴**：按顺序展示游览、用餐、住宿与逐段交通耗时。
-- **行程编辑**：添加或删除景点、搜索替换地点、调整交通方式，并重新检查时间安排。
-- **任务与历史行程**：后台生成、查看进度，登录后保存和管理自己的行程。
+- **旅行需求设置**：填写目的地、日期、兴趣、住宿和交通偏好，选择游玩节奏；已经确定车次或航班时，可补充抵离时间及车站、机场。
+- **单城市行程**：围绕景点所在区域组织游览，结合开放时间和交通耗时安排餐饮、住宿与每日活动。
+- **多城市路线**：推荐并确认城市顺序，将换城时间计入日程；分别展示出发地接驳、城际交通和到达后的接驳。
+- **时间轴与地图**：查看每天的活动顺序、开始结束时间、游览时长和相邻地点之间的交通，结合地图了解位置与路线。
+- **行程编辑**：添加、删除或搜索替换景点，调整部分路段的交通方式，重新计算安排并检查时间冲突。
+- **账号与历史行程**：支持账号密码及微信小程序快捷登录；后台生成任务提供进度查询，完成后保存到账号，方便后续查看和编辑。
 
-## 怎么使用
+使用时，先确定目的地和日期，多城市旅行再确认路线；填写偏好并登录后生成行程，最后按自己的想法调整细节。
 
-1. 选择目的地和出行日期；多城市旅行先确认路线。
-2. 设置游玩节奏、兴趣、交通与住宿偏好，按需填写抵离时间和站点。
-3. 登录并生成行程，完成后查看每天的地图、时间轴和预算。
-4. 按自己的想法编辑行程，保存后可在历史行程中继续查看。
+## 工程实践
 
-例如，想去南京玩四天、主要坐公共交通、喜欢历史和当地美食，可以直接填写这些条件；如果已经订好高铁，再补充到站和返程信息。
+- **景点候选清洗与归并**：对地点检索结果进行类型过滤、别名去重、区域归并和打分，区分大景区与独立子景点，再交给模型选择每日候选。
+- **景点与餐饮分阶段安排**：先确定游览内容，再查找周边餐厅，结合餐次、营业时间和绕行成本选择门店；餐饮安排与交通一起参与后续重排。
+- **时间约束校验与修复**：把抵离缓冲、入住退房、游览、用餐和交通放入同一时间轴，检查重叠、闭馆及衔接冲突，通过换日、替换候选和重排修复安排。
+- **交通偏好与编辑联动**：保留用户对具体路段的交通选择，编辑后重新核算时间；跨城日同时考虑上一座城市的结束时间与下一座城市的可用时段。
+- **后台任务与状态隔离**：MySQL 保存任务及历史行程，客户端通过轮询获取进度；每次规划和编辑使用独立业务状态，复用模型客户端，减少不同用户或任务之间的相互影响。
+- **分层回归测试**：以固定数据验证排程规则、账号及任务隔离、HTTP 任务流程和前端编辑行为，再用显式开启的真实接口评测检查模型与外部数据表现。
 
-## 怎么规划出来的
+实现细节见 [架构说明](docs/ARCHITECTURE.md)，具体场景见 [业务验收](backend/tests/ACCEPTANCE.md)。
 
-模型负责结合需求挑选候选、提出路线和日程建议；地图服务提供地点和交通数据。程序再根据开放时间、用餐时段、交通耗时和抵离时间检查安排，处理重复、绕路和时间冲突。
+## 本地启动
 
-多城市旅行会把“酒店到车站—城际交通—到站后接驳”分开考虑，而不是直接从前一座城市跳到下一座城市。
+建议先运行后端和 Web，再配置微信小程序。当前开发环境为 **Python 3.12、Node.js 24**；还需准备 MySQL，以及自己的模型服务和高德地图 Key。
 
-更详细的实现见 [架构说明](docs/ARCHITECTURE.md)。
-
-## 技术栈
-
-- **后端**：Python、FastAPI、Pydantic、LangChain / LangGraph、MySQL。
-- **Web**：Vue 3、TypeScript、Vite、Ant Design Vue。
-- **微信小程序**：uni-app / Vue 3、HBuilderX。
-- **外部服务**：高德地图、Open-Meteo、兼容 OpenAI 接口的模型服务；Tavily 用于部分信息补充。
-
-## 自己运行
-
-建议先启动后端和 Web，熟悉流程后再配置微信小程序。当前开发环境为 Python 3.12、Node.js 24；运行还需要 MySQL，以及自己的模型和高德地图配置。
-
-以下命令以 Windows PowerShell 为例；Linux / macOS 的启动方式及完整配置见 [开发指南](docs/DEVELOPMENT.md)。
+以下命令以 Windows PowerShell 为例，Linux / macOS 的命令及完整配置见 [开发指南](docs/DEVELOPMENT.md)。
 
 ### 1. 获取代码
 
@@ -50,9 +39,9 @@ git clone https://github.com/bahua1220/trip-agent.git
 cd trip-agent
 ~~~
 
-### 2. 启动后端
+### 2. 后端
 
-先启动 MySQL，准备一个用于本项目的开发账号。后端首次启动会创建项目数据库和表，账号需要相应权限。
+先启动 MySQL，准备项目开发账号。首次启动会创建数据库和表，账号需要相应的初始化与读写权限。
 
 ~~~powershell
 cd backend
@@ -61,22 +50,26 @@ python -m venv .venv
 Copy-Item .env.example .env
 ~~~
 
-打开 `backend/.env`，填写以下配置后再启动：
+在 `backend/.env` 中填写：
 
-- `LLM_API_KEY`、`LLM_BASE_URL`、`LLM_MODEL_ID`：模型服务。
-- `AMAP_API_KEY`：高德 Web 服务 Key。
-- `MYSQL_HOST`、`MYSQL_PORT`、`MYSQL_DATABASE`、`MYSQL_USER`、`MYSQL_PASSWORD`：数据库。
-- `AUTH_SECRET_KEY`：自行生成的随机签名密钥。
+| 配置 | 用途 |
+| --- | --- |
+| `LLM_API_KEY`、`LLM_BASE_URL`、`LLM_MODEL_ID` | 模型服务凭证、接口地址和模型名称 |
+| `AMAP_API_KEY` | 高德 Web 服务 Key，用于地点与路线查询 |
+| `MYSQL_HOST`、`MYSQL_PORT`、`MYSQL_DATABASE`、`MYSQL_USER`、`MYSQL_PASSWORD` | MySQL 连接 |
+| `AUTH_SECRET_KEY` | 自行生成的随机签名密钥 |
+
+配置完成后启动：
 
 ~~~powershell
 .\.venv\Scripts\python.exe run.py
 ~~~
 
-默认后端地址为 `http://localhost:8000`，可访问 `/health` 检查是否启动。需要交互式 API 文档时，在本地配置 `DEBUG=true`，重启后访问 `/docs`。
+后端默认运行在 `http://localhost:8000`，可访问 `/health` 检查启动状态。本地需要接口文档时，设置 `DEBUG=true` 并重启，访问 `/docs`。
 
-### 3. 启动 Web
+### 3. Web
 
-在项目根目录另开一个终端：
+另开终端，在仓库根目录执行：
 
 ~~~powershell
 cd frontend
@@ -84,49 +77,56 @@ npm ci
 Copy-Item .env.example .env.local
 ~~~
 
-在 `frontend/.env.local` 中设置 `VITE_API_BASE_URL=http://localhost:8000`；地图展示使用自己的 `VITE_AMAP_WEB_JS_KEY`。
+将 `VITE_API_BASE_URL` 设置为自己的后端地址，本地一般为 `http://localhost:8000`；地图展示使用自己的 `VITE_AMAP_WEB_JS_KEY`。随后：
 
 ~~~powershell
 npm run dev
 ~~~
 
-打开终端显示的网址（默认 `http://localhost:5173`），注册账号后即可开始规划。真实生成会调用外部模型和地图服务，具体费用与额度由你配置的供应商决定。
+打开终端显示的网址（默认 `http://localhost:5173`），注册账号后即可开始规划。只运行 Web 可以使用账号密码登录，无需先配置微信。真实生成会消耗所配置模型、地图及搜索服务的额度。
 
-### 4. 配置微信小程序（可选）
+### 4. 微信小程序（可选）
 
-使用 HBuilderX 导入 `miniapp/`，填写自己的 AppID，并将 `miniapp/api/index.js` 的后端地址改为自己的 HTTPS 服务地址。示例地址 `https://api.example.com` 需要替换。
+1. 在 HBuilderX 导入 `miniapp/`，在 `manifest.json` 填写自己的应用与微信 AppID。
+2. 修改 `miniapp/api/index.js`，将 `https://api.example.com` 替换为自己的 HTTPS 后端地址。
+3. 在后端配置 `WECHAT_APP_ID`、`WECHAT_APP_SECRET`，在微信后台配置合法域名及隐私说明。
+4. 通过 HBuilderX 编译到微信开发者工具，再使用体验版进行真机测试。
 
-微信登录还需要在后端配置 `WECHAT_APP_ID`、`WECHAT_APP_SECRET`；随后配置合法域名，通过 HBuilderX 编译到微信开发者工具。具体步骤见 [小程序配置](docs/DEVELOPMENT.md#微信小程序)。
-
-## 项目结构
-
-~~~text
-backend/                  后端 API、规划器、服务适配和测试
-frontend/                 Web 客户端
-miniapp/                  微信小程序源码
-frontend_miniapp_patch/    小程序补丁与页面逻辑测试
-docs/                     架构、运行和维护说明
-scripts/                  仓库整理工具及测试
-~~~
+小程序使用 `miniapp/` 工程；`frontend_miniapp_patch/` 用于维护页面补丁与逻辑测试。更多配置和排错步骤见 [开发指南](docs/DEVELOPMENT.md#微信小程序)。
 
 ## 测试
 
-在项目根目录运行：
+在仓库根目录执行后端离线回归和小程序页面逻辑测试：
 
 ~~~powershell
 .\backend\.venv\Scripts\python.exe backend/scripts/run_offline_tests.py
 node --test frontend_miniapp_patch/tests/*.test.cjs
 ~~~
 
-离线测试使用固定数据检查排程规则、任务流程和编辑行为，不消耗真实接口额度。需要查看具体场景或测试真实模型与地图时，可参考 [业务验收](backend/tests/ACCEPTANCE.md) 和 [真实接口评测](backend/tests/REAL_EVALUATION.md)。
+测试场景包括无抵离时间、午间抵达、清晨离开、闭馆换日、餐厅绕行、午后跨城和编辑重排。离线测试使用固定数据并拦截外网请求，不消耗真实接口额度。
 
-## 使用提示
+需要检查真实模型与地图返回结果时，使用 [真实接口评测](backend/tests/REAL_EVALUATION.md)；该入口默认只准备请求，付费执行需要显式开启。Web 构建可在 `frontend/` 运行 `npm run build`。
 
-行程用于出行参考，开放时间、预约要求和交通运营情况请在出发前确认。跨城铁路用时是规划参考，不代表已查询到可购买的具体班次；本项目不提供订票或酒店下单。
+## 项目结构
+
+~~~text
+backend/                  API、规划器、服务适配和回归测试
+frontend/                 Web 客户端
+miniapp/                  微信小程序源码
+frontend_miniapp_patch/    小程序补丁与页面逻辑测试
+docs/                     架构、开发和维护文档
+scripts/                  仓库整理工具及测试
+~~~
+
+## 已知限制
+
+- 景点开放时间、餐厅营业时间和预约要求来自外部信息，出发前仍需确认；页面会提示缺失或需要核实的内容。
+- 城际铁路用时是规划参考，不对应实时车次与余票；清晨、深夜的公共交通还需确认首末班。本项目提供行程规划，不提供订票或酒店下单。
+- 后台任务目前使用进程内工作线程与 MySQL 持久化，适合当前单服务部署，多机任务调度尚未接入。
 
 ## 致谢与许可
 
-项目起步参考了 [Hello-Agents](https://github.com/datawhalechina/Hello-Agents) 和 [HelloAgents](https://github.com/jjyaoao/HelloAgents) 的旅行规划示例，在此基础上持续完善路线、排程、编辑和任务管理。感谢相关框架、uni-app 及地图与天气服务的作者和维护者。
+项目起步参考了 [Hello-Agents](https://github.com/datawhalechina/Hello-Agents) 和 [HelloAgents](https://github.com/jjyaoao/HelloAgents) 的旅行规划示例，并持续完善候选选择、交通衔接、排程、编辑和任务管理。感谢相关框架、uni-app 及地图与天气服务的作者和维护者。
 
 项目级许可证正在整理，第三方依赖遵循各自的许可证。
 

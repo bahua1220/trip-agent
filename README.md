@@ -1,110 +1,132 @@
 # Trip Agent · 智能旅行规划
 
-面向单城市和多城市旅行的 AI 应用。模型参与理解和选择候选，程序结合地图路线、用餐时段、开放时间和抵离约束，生成可编辑的每日时间轴。
+填写目的地、出行日期和旅行偏好，生成一份包含景点、餐饮、住宿及交通安排的多日行程。
 
-本仓库展示的是持续迭代中的工程项目，不承诺任意请求都能生成可执行行程。交通与开放时间存在来源及估算边界，出发前仍需核实。
+Trip Agent 支持单城市和多城市旅行，提供 Web 和微信小程序两个客户端。你可以查看每天的时间轴，也可以继续调整景点、餐厅和交通方式。
 
-## 已实现
+## 能做什么
 
-- 单城市、多城市路线建议与路线确认，支持选择抵达/离开枢纽和时间。
-- 景点候选检索、去重、区域归并和筛选，先考虑游览，再匹配周边餐饮。
-- 按交通偏好计算逐段路线；跨城接驳与城际段分开展示。
-- 酒店、景点、餐饮与交通时间轴，编辑后重新校验和排程。
-- 后台生成任务、状态轮询、任务恢复、账号登录与历史行程管理。
-- 确定性约束校验、质量报告、离线回归和显式开启的小批量真实评测。
+- **单城市规划**：根据游玩节奏、兴趣和交通偏好安排每天的活动。
+- **多城市规划**：推荐城市游览顺序，把换城时间和两端接驳计入日程。
+- **抵达与离开安排**：选择车站或机场，填写抵离时间，预留入住、退房和候车时间。
+- **每日时间轴**：按顺序展示游览、用餐、住宿与逐段交通耗时。
+- **行程编辑**：添加或删除景点、搜索替换地点、调整交通方式，并重新检查时间安排。
+- **任务与历史行程**：后台生成、查看进度，登录后保存和管理自己的行程。
 
-尚未实现：与命名助手对话收集需求、通过自然语言修改整份行程、真实铁路班次/余票查询、旅游产品预订支付。不要把未来计划写成已经上线的功能。
+## 怎么使用
 
-## 实际技术栈
+1. 选择目的地和出行日期；多城市旅行先确认路线。
+2. 设置游玩节奏、兴趣、交通与住宿偏好，按需填写抵离时间和站点。
+3. 登录并生成行程，完成后查看每天的地图、时间轴和预算。
+4. 按自己的想法编辑行程，保存后可在历史行程中继续查看。
 
-后端使用 Python、FastAPI、Pydantic、LangChain / LangGraph、MySQL。模型通过 `ChatOpenAI` 适配兼容接口；地图和路线以高德 REST API 为主，天气使用 Open-Meteo 并提供备用来源，Tavily 用于部分信息补充与异常城际耗时查询。
+例如，想去南京玩四天、主要坐公共交通、喜欢历史和当地美食，可以直接填写这些条件；如果已经订好高铁，再补充到站和返程信息。
 
-Web 端使用 Vue 3、TypeScript、Vite、Ant Design Vue；微信小程序端使用 uni-app / Vue 3，通过 HBuilderX 编译。当前实现不是旧 README 中的 HelloAgents + 高德 MCP 主流程，也不是模型随意输出一篇攻略。
+## 怎么规划出来的
 
-详见 [架构与约束](docs/ARCHITECTURE.md)、[本地运行](docs/DEVELOPMENT.md)、[安全说明](SECURITY.md)。
+模型负责结合需求挑选候选、提出路线和日程建议；地图服务提供地点和交通数据。程序再根据开放时间、用餐时段、交通耗时和抵离时间检查安排，处理重复、绕路和时间冲突。
 
-## 目录
+多城市旅行会把“酒店到车站—城际交通—到站后接驳”分开考虑，而不是直接从前一座城市跳到下一座城市。
 
-```text
-backend/app/                 API、规划器、数据模型及外部服务适配
-backend/scripts/             离线测试与真实评测入口
-backend/tests/               回归用例、固定数据与验收说明
-frontend/                    Web 客户端
-frontend_miniapp_patch/      小程序页面/API 补丁及无网络逻辑测试
-miniapp/                     仅整理导出时生成的小程序源码快照
-scripts/                     开源前扫描及独立快照准备工具
-docs/                        架构、运行与发布检查说明
-```
+更详细的实现见 [架构说明](docs/ARCHITECTURE.md)。
 
-开发工作区中的完整小程序原先位于独立 HBuilderX 项目；`frontend_miniapp_patch` 本身不是可独立编译的小程序。整理工具可把实际使用的页面/API/应用入口合并进 `miniapp/`，不包含原工程中的历史构建产物及未用到的示例组件。
+## 技术栈
 
-## 本地启动
+- **后端**：Python、FastAPI、Pydantic、LangChain / LangGraph、MySQL。
+- **Web**：Vue 3、TypeScript、Vite、Ant Design Vue。
+- **微信小程序**：uni-app / Vue 3、HBuilderX。
+- **外部服务**：高德地图、Open-Meteo、兼容 OpenAI 接口的模型服务；Tavily 用于部分信息补充。
 
-需要 Python、Node.js、MySQL，以及自己的地图和模型配置。当前本地验证环境为 Python 3.12、Node.js 24；尚未进行完整多版本兼容性测试。
+## 自己运行
 
-```powershell
+建议先启动后端和 Web，熟悉流程后再配置微信小程序。当前开发环境为 Python 3.12、Node.js 24；运行还需要 MySQL，以及自己的模型和高德地图配置。
+
+以下命令以 Windows PowerShell 为例；Linux / macOS 的启动方式及完整配置见 [开发指南](docs/DEVELOPMENT.md)。
+
+### 1. 获取代码
+
+~~~powershell
+git clone https://github.com/bahua1220/trip-agent.git
+cd trip-agent
+~~~
+
+### 2. 启动后端
+
+先启动 MySQL，准备一个用于本项目的开发账号。后端首次启动会创建项目数据库和表，账号需要相应权限。
+
+~~~powershell
 cd backend
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 Copy-Item .env.example .env
-# 按 docs/DEVELOPMENT.md 填入本地配置，并准备 MySQL
-python run.py
-```
+~~~
 
-Web 端在另一个终端启动：
+打开 `backend/.env`，填写以下配置后再启动：
 
-```powershell
+- `LLM_API_KEY`、`LLM_BASE_URL`、`LLM_MODEL_ID`：模型服务。
+- `AMAP_API_KEY`：高德 Web 服务 Key。
+- `MYSQL_HOST`、`MYSQL_PORT`、`MYSQL_DATABASE`、`MYSQL_USER`、`MYSQL_PASSWORD`：数据库。
+- `AUTH_SECRET_KEY`：自行生成的随机签名密钥。
+
+~~~powershell
+.\.venv\Scripts\python.exe run.py
+~~~
+
+默认后端地址为 `http://localhost:8000`，可访问 `/health` 检查是否启动。需要交互式 API 文档时，在本地配置 `DEBUG=true`，重启后访问 `/docs`。
+
+### 3. 启动 Web
+
+在项目根目录另开一个终端：
+
+~~~powershell
 cd frontend
 npm ci
 Copy-Item .env.example .env.local
+~~~
+
+在 `frontend/.env.local` 中设置 `VITE_API_BASE_URL=http://localhost:8000`；地图展示使用自己的 `VITE_AMAP_WEB_JS_KEY`。
+
+~~~powershell
 npm run dev
-```
+~~~
 
-生成真实行程会访问模型/地图等外部服务，可能产生费用。配置不完整时不要使用演示的占位值连接生产服务。
+打开终端显示的网址（默认 `http://localhost:5173`），注册账号后即可开始规划。真实生成会调用外部模型和地图服务，具体费用与额度由你配置的供应商决定。
 
-## 测试与评测
+### 4. 配置微信小程序（可选）
 
-从项目根目录执行：
+使用 HBuilderX 导入 `miniapp/`，填写自己的 AppID，并将 `miniapp/api/index.js` 的后端地址改为自己的 HTTPS 服务地址。示例地址 `https://api.example.com` 需要替换。
 
-```powershell
-python backend/scripts/run_offline_tests.py
-python backend/scripts/run_acceptance.py --suite all
+微信登录还需要在后端配置 `WECHAT_APP_ID`、`WECHAT_APP_SECRET`；随后配置合法域名，通过 HBuilderX 编译到微信开发者工具。具体步骤见 [小程序配置](docs/DEVELOPMENT.md#微信小程序)。
+
+## 项目结构
+
+~~~text
+backend/                  后端 API、规划器、服务适配和测试
+frontend/                 Web 客户端
+miniapp/                  微信小程序源码
+frontend_miniapp_patch/    小程序补丁与页面逻辑测试
+docs/                     架构、运行和维护说明
+scripts/                  仓库整理工具及测试
+~~~
+
+## 测试
+
+在项目根目录运行：
+
+~~~powershell
+.\backend\.venv\Scripts\python.exe backend/scripts/run_offline_tests.py
 node --test frontend_miniapp_patch/tests/*.test.cjs
-python -m unittest discover -s scripts/tests -v
-```
+~~~
 
-离线入口会禁止外网连接；模型、地图、身份及数据库等部分环节使用固定适配器或替身。它们验证已编码的业务约束，不等于真实数据质量、MySQL、生产性能或微信真机验收通过。
+离线测试使用固定数据检查排程规则、任务流程和编辑行为，不消耗真实接口额度。需要查看具体场景或测试真实模型与地图时，可参考 [业务验收](backend/tests/ACCEPTANCE.md) 和 [真实接口评测](backend/tests/REAL_EVALUATION.md)。
 
-- [八条验收与测试边界](backend/tests/ACCEPTANCE.md)
-- [真实评测说明](backend/tests/REAL_EVALUATION.md)：默认仅预览请求；付费执行需要显式参数。
-- [四天行程回归说明](backend/tests/FOUR_DAY_REGRESSION.md)
+## 使用提示
 
-不在首页写未经持续验证的成功率、性能或用户规模；实际测试数量和结果以当次执行报告为准。测试报告、原始日志和用户行程不纳入公开仓库。
+行程用于出行参考，开放时间、预约要求和交通运营情况请在出发前确认。跨城铁路用时是规划参考，不代表已查询到可购买的具体班次；本项目不提供订票或酒店下单。
 
-## 发布准备
+## 致谢与许可
 
-本地工作区曾位于包含其他项目的父级 Git 仓库中，且运行配置进入过旧历史。因此不能直接在父仓库 `git add .` 后推送。
+项目起步参考了 [Hello-Agents](https://github.com/datawhalechina/Hello-Agents) 和 [HelloAgents](https://github.com/jjyaoao/HelloAgents) 的旅行规划示例，在此基础上持续完善路线、排程、编辑和任务管理。感谢相关框架、uni-app 及地图与天气服务的作者和维护者。
 
-```powershell
-# 只读扫描：原工作区含私密配置时返回非零是预期的风险提示
-python scripts/repository_audit.py --history --output .codex_staging/github-preparation/source-audit.json
-
-# 生成全新、无旧 Git 历史的本地候选目录；不会创建 GitHub 仓库或推送
-python scripts/prepare_github_snapshot.py --output .codex_staging/github-preparation/candidate
-# 如有完整小程序源码，可额外传入 --miniapp-source <该项目目录>
-```
-
-导出物仍需人工确认来源授权、演示资料和扫描范围后，才决定是否公开。详见 [发布检查清单](docs/PUBLISHING.md)。
-
-## 来源与授权
-
-项目早期基于 HelloAgents 旅行规划示例演进。保留以下来源线索，不将整个项目冒充为全部从零编写：
-
-- [Hello-Agents 教程](https://github.com/datawhalechina/Hello-Agents)
-- [HelloAgents 框架](https://github.com/jjyaoao/HelloAgents)
-- [早期引用的高德 MCP 服务](https://github.com/sugarforever/amap-mcp-server)
-- uni-app / HBuilderX 及各实际使用依赖的原作者。
-
-原 README 声明过 CC BY-NC-SA 4.0，但当前缺少项目级 LICENSE，其他模板元数据也不能代表全部代码的授权。此次整理不擅自改成 MIT 或其他许可。公开前需核对上游来源与适用许可，再补齐 LICENSE / NOTICE；目前不能把本项目描述为已完成授权核验的开源发行版。
+项目级许可证正在整理，第三方依赖遵循各自的许可证。
 

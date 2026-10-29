@@ -1,0 +1,69 @@
+[
+  {
+    "id": "single-default",
+    "title": "南京三天：不填抵离时间和兴趣，公共交通、适中节奏",
+    "request": {
+      "city": "南京", "travel_days": 3, "transportation": "公共交通",
+      "accommodation": "经济型酒店", "preferences": [], "travel_pace": "balanced",
+      "trip_mode": "single_city"
+    },
+    "review_questions": [
+      "是否覆盖南京有代表性的景点，而不是用低价值小点填满？不要求某个景点必须入选。",
+      "是否出现完整日下午空白、午餐后直接晚餐，或为了吃饭牺牲主要游览？",
+      "餐厅是否适合堂食、位置顺路且有地方特色？地图POI存在不代表一定值得推荐。"
+    ]
+  },
+  {
+    "id": "single-timed",
+    "title": "西安三天：12点抵达、17点离开、轻松节奏与历史美食偏好",
+    "request": {
+      "city": "西安", "travel_days": 3, "transportation": "公共交通",
+      "accommodation": "经济型酒店", "preferences": ["历史文化", "当地美食"],
+      "travel_pace": "relaxed", "trip_mode": "single_city",
+      "arrival_transport": "高铁", "arrival_time": "12:00", "arrival_location": "西安北站",
+      "departure_transport": "高铁", "departure_time": "17:00", "departure_location": "西安北站"
+    },
+    "review_questions": [
+      "12点是否当作到站时间，并计入出站、到酒店和入住，而非12点已经开始玩？",
+      "离开日是否计入退房、取行李、酒店到西安北站及候车缓冲？",
+      "轻松节奏是否真正降低强度？历史文化和当地美食偏好是否有可见体现？",
+      "如安排远郊经典景点，是否有充分游览时间且公交接驳合理？"
+    ]
+  },
+  {
+    "id": "multi-rail",
+    "title": "江西五天：南昌到景德镇，高铁跨城、两端枢纽明确",
+    "request": {
+      "city": "江西", "travel_days": 5, "transportation": "公共交通",
+      "accommodation": "经济型酒店", "preferences": ["历史文化", "当地美食"],
+      "travel_pace": "balanced", "trip_mode": "multi_city",
+      "destinations": ["南昌", "景德镇"], "start_location": "南昌", "end_location": "景德镇",
+      "intercity_transport": "high_speed_rail",
+      "arrival_transport": "高铁", "arrival_time": "12:00", "arrival_location": "南昌西站",
+      "departure_transport": "高铁", "departure_time": "18:00", "departure_location": "景德镇北站"
+    },
+    "review_questions": [
+      "跨城是否明确展示酒店到车站、铁路、到站后到酒店，而不是隔天瞬移？",
+      "跨城出发时间是否依据可用窗口，不把换城写死在早晨？",
+      "两个城市的景点、酒店与餐饮是否各在正确城市？是否把普通地名或商业店误当经典景点？",
+      "铁路耗时是否标明参考估算，未伪装成已核验的真实班次？"
+    ]
+  },
+  {
+    "id": "single-four-day",
+    "default": false,
+    "title": "南京四天回归：适中节奏，10点高铁抵达、末日07:01高铁离开",
+    "request": {
+      "city": "南京", "travel_days": 4, "transportation": "公共交通",
+      "accommodation": "经济型酒店", "preferences": [], "travel_pace": "balanced",
+      "trip_mode": "single_city", "arrival_transport": "高铁", "arrival_time": "10:00",
+      "arrival_location": "南京南站", "departure_transport": "高铁", "departure_time": "07:01",
+      "departure_location": "南京南站"
+    },
+    "review_questions": [
+      "两个完整日是否都有充分游览，而不是一天三个景点、另一天只游古鸡鸣寺90分钟？",
+      "老门东、夫子庙等独立区域是否被归并误删？普通餐厅和零售店是否混入景点？",
+      "末日07:01离开是否保留必要退房、到站与候车时间，而非继续安排景点？本用例站点固定为南京南站，并非原失败任务全部输入的精确回放。"
+    ]
+  }
+]

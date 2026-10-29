@@ -1,0 +1,19 @@
+{
+  "name": "Trip Agent",
+  "appid": "",
+  "description": "智能旅行规划示例",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "vueVersion": "3",
+  "mp-weixin": {
+    "appid": "",
+    "usingComponents": true,
+    "setting": {
+      "urlCheck": true
+    }
+  },
+  "uniStatistics": {
+    "enable": false
+  }
+}

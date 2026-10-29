@@ -1,0 +1,54 @@
+# Local configuration: examples are safe to commit; runtime values are not.
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.local
+project.private.config.json
+
+# Credentials and database/runtime data
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+authorized_keys
+*.db
+*.db-*
+*.sqlite*
+*.sql
+*.sql.gz
+backend/data/
+backend/logs/
+backend/test-results/
+*.log
+tripPlan*.json
+
+# Private deployment, audit output, previous source copies and archives
+.codex_staging/
+.agents/
+_deploy_server_*/
+DEPLOYMENT.md
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Generated dependencies, builds and editor state
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage*
+htmlcov/
+dist/
+build/
+unpackage/
+.git/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

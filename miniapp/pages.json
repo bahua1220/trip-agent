@@ -1,0 +1,72 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "智能旅行助手"
+      }
+    },
+    {
+      "path": "pages/preferences/preferences",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "完善偏好"
+      }
+    },
+    {
+      "path": "pages/route/route",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "确认路线"
+      }
+    },
+    {
+      "path": "pages/generating/generating",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "生成行程"
+      }
+    },
+    {
+      "path": "pages/result/result",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "行程规划"
+      }
+    },
+    {
+      "path": "pages/history/history",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "历史行程"
+      }
+    },
+    {
+      "path": "pages/account/account",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "登录注册"
+      }
+    },
+    {
+      "path": "pages/legal/legal",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "服务协议"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#FBF8EF",
+    "backgroundColor": "#FBF8EF",
+    "backgroundTextStyle": "dark"
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "source": "Reduced structural regression fixture; task identifier removed; not full raw provider data",
+  "request": {
+    "city": "南京", "travel_days": 4, "transportation": "公共交通",
+    "accommodation": "经济型酒店", "preferences": [], "travel_pace": "balanced",
+    "arrival_transport": "高铁", "arrival_time": "10:00", "arrival_location": "南京南站",
+    "departure_transport": "高铁", "departure_time": "07:01", "departure_location": "南京南站"
+  },
+  "after_route_repair": [
+    [["明孝陵景区-明孝陵", 90]],
+    [["中山陵景区", 90], ["南京博物院", 150], ["总统府", 120]],
+    [["古鸡鸣寺", 90]],
+    []
+  ],
+  "mixed_hierarchy": [
+    {"id":"QINHUAI","name":"夫子庙秦淮风光带","score":12,"_candidate_tier":"classic","_is_core":true},
+    {"id":"LAOMENDONG","name":"老门东","parent":"QINHUAI","childtype":"601","score":8},
+    {"id":"FUZIMIAO","name":"南京夫子庙","parent":"QINHUAI","childtype":"601","score":9},
+    {"id":"LANE","name":"老门东-步行街","parent":"QINHUAI","childtype":"301","score":7},
+    {"id":"STREET","name":"夫子庙步行街","parent":"QINHUAI","childtype":"301","score":6},
+    {"id":"RESTAURANT","name":"老门东老谢家南京菜(夫子庙店)","type":"餐饮服务;中餐厅","typecode":"050100","score":10},
+    {"id":"SHOP","name":"mytown老门东店","type":"购物服务;专卖店","typecode":"061200","score":9}
+  ]
+}
